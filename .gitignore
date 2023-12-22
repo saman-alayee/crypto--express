@@ -1,0 +1,18 @@
+# Logs
+logs
+*.log
+
+# Node.js generated files
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Built files
+dist/
+
+# Environment variables
+.env
+
+# OS-specific files
+.DS_Store
+Thumbs.db
