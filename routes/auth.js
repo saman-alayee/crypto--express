@@ -4,6 +4,85 @@ const { User } = require("../models/user");
 const bcrypt = require("bcrypt");
 const Joi = require("joi");
 
+/**
+ * @swagger
+ * tags:
+ *   name: Authentication
+ *   description: API endpoints for user authentication
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     AuthRequest:
+ *       type: object
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *         password:
+ *           type: string
+ *       required:
+ *         - email
+ *         - password
+ *     AuthResponse:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: string
+ *         token:
+ *           type: string
+ *         username:
+ *           type: string
+ *         id:
+ *           type: string
+ *         email:
+ *           type: string
+ *       required:
+ *         - status
+ *         - token
+ *         - username
+ *         - id
+ *         - email
+ */
+
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login as an existing user
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AuthRequest'
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AuthResponse'
+ *       400:
+ *         description: Bad request or invalid credentials
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: Invalid email or password
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: Internal Server Error
+ */
+
+
 router.post("/", async (req, res) => {
   try {
     const { error } = validate(req.body);

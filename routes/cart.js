@@ -4,13 +4,167 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 
+/**
+ * @swagger
+ * tags:
+ *   name: Cart
+ *   description: API endpoints for managing the shopping cart
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     CartItem:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         productId:
+ *           type: string
+ *         quantity:
+ *           type: integer
+ *       required:
+ *         - productId
+ *         - quantity
+ *     CartItemResponse:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         productId:
+ *           type: string
+ *         quantity:
+ *           type: integer
+ *       required:
+ *         - _id
+ *         - productId
+ *         - quantity
+ */
+
+/**
+ * @swagger
+ * /cart:
+ *   get:
+ *     summary: Get all items in the cart
+ *     tags: [Cart]
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/CartItem'
+ */
+
+/**
+ * @swagger
+ * /cart:
+ *   post:
+ *     summary: Add an item to the cart
+ *     tags: [Cart]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CartItem'
+ *     responses:
+ *       200:
+ *         description: Item added to the cart successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CartItemResponse'
+ *       400:
+ *         description: Bad request or invalid product ID
+ *       404:
+ *         description: Product not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /cart/{id}:
+ *   delete:
+ *     summary: Delete an item from the cart by ID
+ *     tags: [Cart]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the cart item to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Cart item deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CartItemResponse'
+ *       404:
+ *         description: Cart item not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /cart/{id}:
+ *   get:
+ *     summary: Get details of a specific item in the cart by ID
+ *     tags: [Cart]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the cart item to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CartItemResponse'
+ *       404:
+ *         description: Cart item not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /cart:
+ *   delete:
+ *     summary: Delete all items from the cart
+ *     tags: [Cart]
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *       404:
+ *         description: No cart items found to delete
+ *       500:
+ *         description: Internal server error
+ */
+
+
+
 // Get all items in the cart
 router.get("/", async (req, res) => {
   const cartItems = await Cart.find().sort("name");
   res.send(cartItems);
 });
 
-// Add an item to the cart
 router.post("/", async (req, res) => {
   try {
     const { error } = validate(req.body);
@@ -18,32 +172,26 @@ router.post("/", async (req, res) => {
 
     const { productId, quantity } = req.body;
 
-    // Check if the product exists in the Product database
     const existingProduct = await Product.findById(productId);
     
     if (!existingProduct) {
       return res.status(404).send("Product with the given ID was not found.");
     }
 
-    // Check if the product is already in the cart
     const existingCartItem = await Cart.findOne({ productId });
 
     if (existingCartItem) {
-      // If the product already exists in the cart, update the quantity
       existingCartItem.quantity += quantity;
       await existingCartItem.save();
       res.send(existingCartItem);
     } else {
-      // If the product doesn't exist in the cart, create a new cart item
       const cartItem = new Cart({
         productId,
         quantity,
       });
 
-      // Save the new cart item to the database
       const savedCartItem = await cartItem.save();
 
-      // Send the newly created cart item as the response
       res.send(savedCartItem);
     }
   } catch (error) {
@@ -55,7 +203,6 @@ router.post("/", async (req, res) => {
 // Delete an item from the cart
 router.delete("/:id", auth, async (req, res) => {
   try {
-    // Find the cart item by ID and delete it
     const cartItem = await Cart.findByIdAndRemove(req.params.id);
 
     if (!cartItem) {

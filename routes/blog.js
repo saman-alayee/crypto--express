@@ -5,40 +5,168 @@ const router = express.Router();
 const ExcelJS = require("exceljs");
 const path = require("path");
 const auth = require("../middleware/auth");
+
+
+/**
+ * @swagger
+ * tags:
+ *   name: Blogs
+ *   description: API endpoints for managing blogs
+ */
+
 /**
  * @swagger
  * components:
  *   schemas:
- *     Book:
+ *     Blog:
  *       type: object
- *       required:
- *         - title
- *         - author
- *         - finished
  *       properties:
- *         id:
+ *         _id:
  *           type: string
- *           description: The auto-generated id of the book
  *         title:
  *           type: string
- *           description: The title of your book
+ *         image:
+ *           type: string
  *         author:
  *           type: string
- *           description: The book author
- *         finished:
- *           type: boolean
- *           description: Whether you have finished reading the book
- *         createdAt:
+ *         type:
  *           type: string
- *           format: date
- *           description: The date the book was added
- *       example:
- *         id: d5fE_asz
- *         title: The New Turing Omnibus
- *         author: Alexander K. Dewdney
- *         finished: false
- *         createdAt: 2020-03-10T04:05:06.157Z
+ *         description:
+ *           type: string
+ *       required:
+ *         - title
+ *         - image
+ *         - author
+ *         - type
+ *         - description
  */
+
+/**
+ * @swagger
+ * /blogs:
+ *   get:
+ *     summary: Get all blogs
+ *     tags: [Blogs]
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Blog'
+ */
+
+/**
+ * @swagger
+ * /blogs:
+ *   post:
+ *     summary: Create a new blog
+ *     tags: [Blogs]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *               author:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Blog created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Blog'
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /blogs/{id}:
+ *   delete:
+ *     summary: Delete a blog by ID
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the blog to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Blog deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Blog'
+ *       404:
+ *         description: Blog not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /blogs/{id}:
+ *   get:
+ *     summary: Get a blog by ID
+ *     tags: [Blogs]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the blog to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Blog'
+ *       404:
+ *         description: Blog not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /blogs:
+ *   delete:
+ *     summary: Delete all blogs
+ *     tags: [Blogs]
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: string
+ *       404:
+ *         description: No blogs found to delete
+ *       500:
+ *         description: Internal server error
+ */
+
+
 router.get("/", async (req, res) => {
   const blogs = await Blog.find().sort("name");
   res.send(blogs);
