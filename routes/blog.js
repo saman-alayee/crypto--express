@@ -1,4 +1,4 @@
-const { Blog, validate } = require("../models/blog");
+const { Blog, validate, upload } = require("../models/blog");
 const express = require("express");
 const nodemailer = require("nodemailer"); // Don't forget to require nodemailer
 const router = express.Router();
@@ -11,27 +11,39 @@ router.get("/", async (req, res) => {
   res.send(blogs);
 });
 
-router.post("/", async (req, res) => {
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+router.post("/", upload.single("image"), async (req, res) => {
+  try {
+    const uploadedFile = req.file;
 
-  // Create a new Blog instance
-  let blog = new Blog({
-    // Set properties based on the blog body
-    title: req.body.title,
-    image: req.body.image,
-    author: req.body.author,
-    description: req.body.description,
-    type: req.body.type,
-  });
+    if (!uploadedFile) {
+      return res
+        .status(400)
+        .send("Please upload an image using 'image' field.");
+    }
 
-  // Save the new blog to the database
-  blog = await blog.save();
+    const attachmentFileUrl = `${req.protocol}://${req.get("host")}/uploads/${
+      uploadedFile.filename
+    }`;
 
-  // Send the newly created blog as the response
-  res.send(blog);
+    // Extract additional fields from the request body
+    const { title, type, author, description } = req.body;
+
+    const blog = new Blog({
+      title,
+      type,
+      author,
+      description,
+      image: attachmentFileUrl,
+    });
+
+    await blog.save();
+    res.status(201).send(blog);
+  } catch (error) {
+    console.error("Error during blog creation:", error);
+    res.status(500).send("An error occurred while creating the blog.");
+  }
 });
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     // Find the blog by ID and delete it
     const blog = await Blog.findByIdAndRemove(req.params.id);
@@ -42,9 +54,7 @@ router.delete("/:id", auth, async (req, res) => {
 
     res.send(blog);
   } catch (error) {
-    return res
-      .status(500)
-      .send("An error occurred while deleting the blog.");
+    return res.status(500).send("An error occurred while deleting the blog.");
   }
 });
 
@@ -66,7 +76,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Delete all blogs
-router.delete("/", auth, async (req, res) => {
+router.delete("/", async (req, res) => {
   try {
     // Delete all blogs
     const result = await blog.deleteMany();
