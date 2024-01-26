@@ -158,7 +158,7 @@ router.post("/", upload.single("attachmentFile"), async (req, res) => {
       return res.status(400).send("Please upload an image using 'attachmentFile' field.");
     }
 
-    const attachmentFileUrl = `${req.protocol}://${req.get("host")}/uploads/${uploadedFile.filename}`;
+    const attachmentFileUrl = `${req.protocol}://${req.get("host")}/uploads/products/${uploadedFile.filename}`;
 
     // Extract additional fields from the request body
     const { name, category, price, shortDescription, description } = req.body;

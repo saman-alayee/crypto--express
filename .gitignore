@@ -1,8 +1,7 @@
 # Logs
 logs
 *.log
-uploads
-exports
+
 # Node.js generated files
 node_modules/
 npm-debug.log*

@@ -6,6 +6,10 @@ var demoUser = require('../routes/user');
 var demoProduct = require('../routes/product');
 var demoCart = require('../routes/cart');
 var demoCharge= require('../routes/charge');
+var demoClinic= require('../routes/clinic');
+var demoShelter= require('../routes/shelter');
+
+
 
 
 // Import the swagger module
@@ -26,5 +30,9 @@ module.exports = function (app) {
   app.use('/api/products', demoProduct);
   app.use('/api/cart', demoCart);
   app.use('/api/charge', demoCharge);
+  app.use('/api/clinics', demoClinic);
+  app.use('/api/shelters', demoShelter);
+
+
 
 };
