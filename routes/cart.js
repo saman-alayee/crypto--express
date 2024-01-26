@@ -157,23 +157,30 @@ const auth = require("../middleware/auth");
  *         description: Internal server error
  */
 
-
-
 // Get all items in the cart
-router.get("/", async (req, res) => {
-  const cartItems = await Cart.find().sort("name");
-  res.send(cartItems);
+router.get("/", auth, async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const cartItems = await Cart.find({ userId }).sort("name");
+    res.send(cartItems);
+  } catch (error) {
+    console.error("Error during fetching cart items:", error);
+    res.status(500).send("An error occurred while fetching cart items.");
+  }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   try {
+    const userId = req.userId; 
+
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
     const { productId, quantity } = req.body;
 
     const existingProduct = await Product.findById(productId);
-    
+
     if (!existingProduct) {
       return res.status(404).send("Product with the given ID was not found.");
     }
@@ -186,6 +193,7 @@ router.post("/", async (req, res) => {
       res.send(existingCartItem);
     } else {
       const cartItem = new Cart({
+        userId,
         productId,
         quantity,
       });
@@ -211,7 +219,9 @@ router.delete("/:id", auth, async (req, res) => {
 
     res.send(cartItem);
   } catch (error) {
-    return res.status(500).send("An error occurred while deleting the cart item.");
+    return res
+      .status(500)
+      .send("An error occurred while deleting the cart item.");
   }
 });
 
@@ -227,24 +237,11 @@ router.get("/:id", async (req, res) => {
 
     res.send(cartItem);
   } catch (error) {
-    return res.status(500).send("An error occurred while fetching the cart item.");
+    return res
+      .status(500)
+      .send("An error occurred while fetching the cart item.");
   }
 });
 
-// Delete all items from the cart
-router.delete("/", auth, async (req, res) => {
-  try {
-    // Delete all cart items
-    const result = await Cart.deleteMany();
-
-    if (result.deletedCount === 0) {
-      return res.status(404).send("No cart items found to delete.");
-    }
-
-    res.send(`Deleted ${result.deletedCount} cart items.`);
-  } catch (error) {
-    return res.status(500).send("An error occurred while deleting cart items.");
-  }
-});
 
 module.exports = router;

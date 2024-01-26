@@ -4,6 +4,11 @@ const mongoose = require("mongoose");
 const Cart = mongoose.model(
   "Cart",
   new mongoose.Schema({
+    userId: {
+      type: String,
+      required: true,
+      maxlength: 100,
+    },
     productId: {
       type: String,
       required: true,

@@ -5,6 +5,8 @@ var demoAuth = require('../routes/auth');
 var demoUser = require('../routes/user');
 var demoProduct = require('../routes/product');
 var demoCart = require('../routes/cart');
+var demoCharge= require('../routes/charge');
+
 
 // Import the swagger module
 const swagger = require('../swagger');
@@ -18,9 +20,11 @@ module.exports = function (app) {
   // Define your API routes
   app.use('/api', indexRouter);
   
-  app.use('/api/blog', demoBlog);
+  app.use('/api/blogs', demoBlog);
   app.use('/api/auth', demoAuth);
   app.use('/api/users', demoUser);
   app.use('/api/products', demoProduct);
-  app.use('/api/carts', demoCart);
+  app.use('/api/cart', demoCart);
+  app.use('/api/charge', demoCharge);
+
 };

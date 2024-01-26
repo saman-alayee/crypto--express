@@ -190,7 +190,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id",  async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
 

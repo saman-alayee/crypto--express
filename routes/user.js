@@ -35,7 +35,7 @@ const auth = require("../middleware/auth");
 
 /**
  * @swagger
- * /users/verify:
+ * /verify:
  *   get:
  *     summary: Verify user details
  *     tags: [User]
@@ -198,7 +198,7 @@ router.post("/", async (req, res) => {
   user.password = await bcrypt.hash(user.password, salt);
 
   await user.save();
-  res.send(_.pick(user, ["_id", "email","name",]));
+  res.send(_.pick(user, ["_id", "email","name","wallet"]));
 });
 
 router.get("/", async (req, res) => {

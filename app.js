@@ -10,20 +10,36 @@ const ExcelJS = require('exceljs');
 var app = express();
 app.use(cors());
 
-// Import the swagger module
 const swagger = require('./swagger');
 
-// Other middleware and configurations
 
 require('./startup/routes')(app);
 require('./startup/db')();
 
-// Other middleware and configurations
-
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 // Use Swagger documentation middleware
 app.use('/api-docs', swagger.serveSwaggerUI, swagger.setupSwaggerUI);
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Other middleware and configurations
+const baseUrl = 'http://localhost:5000';
+
+app.use((req, res, next) => {
+  const clientIP = req.ip; // This will give you the IP address of the client
+  console.log(`Request from IP: ${clientIP}`);
+  next();
+});
+
+// Middleware to prepend base URL to image paths
+app.use((req, res, next) => {
+  res.locals.baseUrl = baseUrl;
+  next();
+});
 
 // error handler
 app.use(function (err, req, res, next) {

@@ -49,7 +49,7 @@ const Joi = require("joi");
 
 /**
  * @swagger
- * /auth/login:
+ * /auth:
  *   post:
  *     summary: Login as an existing user
  *     tags: [Authentication]
