@@ -17,7 +17,11 @@ const Cart = mongoose.model(
     quantity: {
         type: Number, // Change the type to Number for an integer
         required: true,
-        max: 255, // Update max to 255 if you have a specific limit
+      },
+      totalPrice: {
+        type: Number,
+        required: true,
+        default: 0,
       },
     
   },{timestamps:true},
@@ -28,7 +32,6 @@ function validateCart(cart) {
   const schema = Joi.object({
     productId: Joi.string().max(100).required(),
     quantity: Joi.number().required(), // Change to number type in Joi
-    
   });
   const result = schema.validate(cart);
   return result;

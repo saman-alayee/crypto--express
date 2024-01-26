@@ -1,5 +1,7 @@
 const { Cart, validate } = require("../models/cart");
 const { Product } = require("../models/product"); // Import the Product model
+const { User } = require("../models/user");
+
 const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
@@ -172,7 +174,7 @@ router.get("/", auth, async (req, res) => {
 
 router.post("/", auth, async (req, res) => {
   try {
-    const userId = req.userId; 
+    const userId = req.userId;
 
     const { error } = validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -186,27 +188,36 @@ router.post("/", auth, async (req, res) => {
     }
 
     const existingCartItem = await Cart.findOne({ productId });
+    const existingUser = await User.findById(userId);
+    const totalPrice = quantity * existingProduct.price;
 
-    if (existingCartItem) {
-      existingCartItem.quantity += quantity;
-      await existingCartItem.save();
-      res.send(existingCartItem);
-    } else {
-      const cartItem = new Cart({
-        userId,
-        productId,
-        quantity,
-      });
 
-      const savedCartItem = await cartItem.save();
 
-      res.send(savedCartItem);
+    if (existingUser.wallet < totalPrice) {
+      return res.status(400).send("Insufficient funds in the wallet.");
     }
-  } catch (error) {
+
+    // Deduct the amount from the wallet
+    existingUser.wallet -= totalPrice;
+    await existingUser.save();
+
+    const cartItem = new Cart({
+      userId,
+      productId,
+      quantity,
+      totalPrice,
+    });
+
+    const savedCartItem = await cartItem.save();
+
+    res.send(savedCartItem);
+  } 
+  catch (error) {
     console.error("Error during cart item creation:", error);
     res.status(500).send("An error occurred while creating the cart item.");
   }
 });
+
 
 // Delete an item from the cart
 router.delete("/:id", auth, async (req, res) => {
@@ -226,22 +237,7 @@ router.delete("/:id", auth, async (req, res) => {
 });
 
 // Get details of a specific item in the cart
-router.get("/:id", async (req, res) => {
-  try {
-    // Find the cart item by ID
-    const cartItem = await Cart.findById(req.params.id);
 
-    if (!cartItem) {
-      return res.status(404).send("Cart item with the given ID was not found.");
-    }
-
-    res.send(cartItem);
-  } catch (error) {
-    return res
-      .status(500)
-      .send("An error occurred while fetching the cart item.");
-  }
-});
 
 
 module.exports = router;

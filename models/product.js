@@ -47,7 +47,7 @@ const Product = mongoose.model(
       },
       shortDescription: {
         type: String,
-        required: true,
+        required: false,
         maxlength: 1024,
       },
 
