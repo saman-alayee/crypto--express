@@ -9,7 +9,7 @@ const auth = require("../middleware/auth");
 
 /**
  * @swagger
- * /wallet/charge:
+ * /charge:
  *   post:
  *     summary: Charge user's wallet
  *     tags: [Wallet]

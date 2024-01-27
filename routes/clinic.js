@@ -5,6 +5,158 @@ const path = require("path");
 const auth = require("../middleware/auth");
 
 
+/**
+ * @swagger
+ * tags:
+ *   name: Clinics
+ *   description: API endpoints for managing clinics
+ */
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Clinic:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         name:
+ *           type: string
+ *         address:
+ *           type: string
+ *         phone:
+ *           type: string
+ *         doctorName:
+ *           type: string
+ *         shortDescription:
+ *           type: string
+ *         doctorDescription:
+ *           type: string
+ *         attachmentFile:
+ *           type: string
+ *       required:
+ *         - name
+ *         - address
+ *         - phone
+ *         - doctorName
+ *         - shortDescription
+ *         - doctorDescription
+ */
+
+/**
+ * @swagger
+ * /clinics:
+ *   get:
+ *     summary: Get all clinics
+ *     tags: [Clinics]
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Clinic'
+ */
+
+/**
+ * @swagger
+ * /clinics:
+ *   post:
+ *     summary: Create a new clinic
+ *     tags: [Clinics]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               attachmentFile:
+ *                 type: string
+ *                 format: binary
+ *               name:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               doctorName:
+ *                 type: string
+ *               shortDescription:
+ *                 type: string
+ *               doctorDescription:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Clinic created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Clinic'
+ *       400:
+ *         description: Bad request or missing attachmentFile
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /clinics/{id}:
+ *   delete:
+ *     summary: Delete a clinic by ID
+ *     tags: [Clinics]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the clinic to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Clinic deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Clinic'
+ *       404:
+ *         description: Clinic not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /clinics/{id}:
+ *   get:
+ *     summary: Get details of a specific clinic by ID
+ *     tags: [Clinics]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the clinic to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Clinic'
+ *       404:
+ *         description: Clinic not found
+ *       500:
+ *         description: Internal server error
+ */
+
+// ... (previous imports and code)
+
+module.exports = router;
 
 
 
