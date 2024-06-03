@@ -37,5 +37,9 @@ router.post("/", async (req, res) => {
     res.status(400).send(error.message);
   }
 });
-
+router.get("/", async (req, res) => {
+    const userHash = await UserHash.find().sort("name");
+    res.send(userHash);
+  });
+  
 module.exports = router;
