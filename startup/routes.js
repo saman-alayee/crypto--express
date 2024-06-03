@@ -10,6 +10,7 @@ var demoClinic= require('../routes/clinic');
 var demoShelter= require('../routes/shelter');
 var demoHash= require('../routes/hash');
 var demoUserHash= require('../routes/userHash');
+var demoAuthHash= require('../routes/authHash');
 
 
 
@@ -36,9 +37,6 @@ module.exports = function (app) {
   app.use('/api/shelters', demoShelter);
   app.use('/api/hash', demoHash);
   app.use('/api/userhash', demoUserHash);
-
-
-
-
+  app.use('/api/authhash', demoAuthHash);
 
 };
