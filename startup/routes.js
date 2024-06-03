@@ -8,6 +8,8 @@ var demoCart = require('../routes/cart');
 var demoCharge= require('../routes/charge');
 var demoClinic= require('../routes/clinic');
 var demoShelter= require('../routes/shelter');
+var demoHash= require('../routes/hash');
+var demoUserHash= require('../routes/userHash');
 
 
 
@@ -32,6 +34,10 @@ module.exports = function (app) {
   app.use('/api/charge', demoCharge);
   app.use('/api/clinics', demoClinic);
   app.use('/api/shelters', demoShelter);
+  app.use('/api/hash', demoHash);
+  app.use('/api/userhash', demoUserHash);
+
+
 
 
 
