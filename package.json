@@ -32,6 +32,12 @@
     "path": "^0.12.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "uglify-js": "^3.19.1",
     "winston": "^3.10.0"
-  }
+  },
+  "description": "An efficient Node.js Express project for managing [your specific use case].",
+  "main": "app.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
