@@ -16,8 +16,8 @@ const swagger = require('./swagger');
 require('./startup/routes')(app);
 require('./startup/db')();
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 // Use Swagger documentation middleware
 app.use('/api-docs', swagger.serveSwaggerUI, swagger.setupSwaggerUI);
 app.use(logger('dev'));
